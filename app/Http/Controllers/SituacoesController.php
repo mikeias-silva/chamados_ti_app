@@ -8,6 +8,7 @@ use App\Services\SituacoesService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SituacoesController extends Controller
 {
@@ -33,7 +34,7 @@ class SituacoesController extends Controller
     public function store(SituacoesRequest $request)
     {
         try {
-            $this->situacoesService->createSituacao($request->validated());
+             $this->situacoesService->createSituacao($request->validated());
             return redirect()->route('situacoes.index')->with(['success' => 'Cadastrado com sucesso!']);
         } catch (Exception $exception) {
             return redirect()->route('situacoes.index')->withErrors($exception->getMessage());
