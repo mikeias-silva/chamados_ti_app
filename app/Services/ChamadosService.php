@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ChamadosService
@@ -67,6 +68,59 @@ class ChamadosService
             Log::channel('daily')->error("Erro ao deletar chamado: $exception");
             throw new Exception($exception);
         }
+    }
+
+    public function atenderChamado($chamado)
+    {
+        try {
+            $situacao = Situacoes::where('nome', 'em atendimento')->first();
+            $chamado->situacao_id = $situacao->id;
+            return $chamado->save();
+        } catch (Exception $exception) {
+            Log::channel('daily')->error("Erro ao atender este chamado! $exception");
+            throw $exception;
+        }
+    }
+
+    public function resolverChamado($chamado)
+    {
+        try {
+            $situacao = Situacoes::where('nome', 'resolvido')->first();
+            $chamado->situacao_id = $situacao->id;
+            $chamado->data_solucao = Carbon::now();
+            return $chamado->save();
+        } catch (Exception $exception) {
+            Log::channel('daily')->error("Erro ao resolver este chamado! $exception");
+            throw $exception;
+        }
+    }
+
+    public function filtrarPorPeriodo(Carbon $inicio, Carbon $fim)
+    {
+        return Chamados::whereBetween('data_criacao', [$inicio, $fim])->get();
+    }
+
+    public function contarPorCategoriaNoPeriodo(Carbon $inicio, Carbon $fim)
+    {
+        return Chamados::select('categoria_id', DB::raw('COUNT(*) as total_chamados'))
+            ->whereBetween('data_criacao', [$inicio, $fim])
+            ->groupBy('categoria_id')
+            ->get();
+    }
+
+    public function contarChamadosResolvidosDentroPrazo(Carbon $inicio, Carbon $fim)
+    {
+        return Chamados::whereBetween('data_criacao', [$inicio, $fim])
+            ->whereHas('situacao', function ($query) {
+                $query->where('nome', 'resolvido');
+            })
+            ->whereRaw('data_solucao <= prazo_solucao')
+            ->count();
+    }
+
+    public function contarChamadosAbertosNoPeriodo(Carbon $inicio, Carbon $fim)
+    {
+        return Chamados::whereBetween('data_criacao', [$inicio, $fim])->count();
     }
 
 }
