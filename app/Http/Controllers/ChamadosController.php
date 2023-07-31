@@ -52,7 +52,7 @@ class ChamadosController extends Controller
 
     public function edit(Chamados $chamado)
     {
-        $chamado->load( 'categoria', 'situacao');
+        $chamado->load('categoria', 'situacao');
         $categorias = Categorias::all();
         return view('chamados.edit', compact('chamado', 'categorias'));
     }
@@ -80,5 +80,38 @@ class ChamadosController extends Controller
         } catch (Exception $exception) {
             return redirect()->route('chamados.index')->withErrors([$exception->getMessage()]);
         }
+    }
+
+    public function atender(Chamados $chamado)
+    {
+        try {
+            $this->chamadosService->atenderChamado($chamado);
+            return redirect()->route('chamados.index')->with(['success' => "Chamado $chamado->id iniciado atendimento com sucesso!"]);
+        } catch (Exception $exception) {
+            return redirect()->route('chamados.index')->withErrors([$exception->getMessage()]);
+        }
+
+    }
+
+    public function resolver(Chamados $chamado)
+    {
+        try {
+            $this->chamadosService->resolverChamado($chamado);
+            return redirect()->route('chamados.index')->with(['success' => "Chamado $chamado->id resolvido com sucesso!"]);
+        } catch (Exception $exception) {
+            return redirect()->route('chamados.index')->withErrors([$exception->getMessage()]);
+
+        }
+    }
+
+    public function iniciarAtender(Chamados $chamado)
+    {
+        return view('chamados.Atender', compact('chamado'));
+    }
+
+    public function marcarResolvido(Chamados $chamado)
+    {
+        return view('chamados.resolver', compact('chamado'));
+
     }
 }

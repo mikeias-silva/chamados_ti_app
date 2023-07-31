@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Presenters\ChamadosPresenter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,11 @@ class Chamados extends Model
     protected $fillable = ['titulo', 'descricao', 'prazo_solucao', 'data_criacao', 'data_solucao', 'categoria_id',
         'situacao_id', 'user_id'];
 
+
+    public function presenter()
+    {
+        return new ChamadosPresenter($this);
+    }
 
     public function categoria()
     {

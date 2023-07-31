@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-3">
                     <label for="" class="form-label">Nome</label>
-                    <input type="text" value="{{$categoria->nome}}" readonly/>
+                    <input type="text" value="{{$categoria->presenter()->nome($categoria->nome) ?? ''}}" readonly/>
                 </div>
             </div>
         </div>

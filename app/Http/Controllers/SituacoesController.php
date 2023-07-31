@@ -7,8 +7,6 @@ use App\Models\Situacoes;
 use App\Services\SituacoesService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class SituacoesController extends Controller
 {

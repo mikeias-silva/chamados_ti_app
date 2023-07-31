@@ -40,7 +40,7 @@ class CategoriasController extends Controller
             return redirect()->route('categorias.index')->withErrors([$exception->getMessage()]);
         }
     }
-    public function show(Categorias $categoria): View
+    public function show(Categorias $categoria)
     {
         return view('categorias.show', $categoria);
     }
