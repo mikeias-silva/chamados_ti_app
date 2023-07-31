@@ -7,6 +7,15 @@
 import axios from 'axios';
 window.axios = axios;
 
+const loadBootstrap = async () => {
+    await import('bootstrap/dist/css/bootstrap.css');
+    const bootstrap = await import('bootstrap');
+    window.bootstrap = bootstrap;
+};
+
+loadBootstrap().catch(error => console.log(error));
+
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**

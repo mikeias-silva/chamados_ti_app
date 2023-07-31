@@ -11,7 +11,7 @@ class ChamadosRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,11 +25,7 @@ class ChamadosRequest extends FormRequest
             'titulo' => 'required|string',
             'categoria_id' => 'required',
             'descricao' => 'required|string',
-            'prazo_solucao' => 'required|date',
-            'situacao' => 'required',
-            'data_criacao' => 'required|date',
-            'data_solucao' => 'date',
-            'user_id' => 'required'
+//            'user_id' => 'required'
         ];
 
     }
@@ -40,11 +36,7 @@ class ChamadosRequest extends FormRequest
             'titulo' => 'O campo titulo é obrigatório',
             'categoria_id' => 'O campo categoria precisa ser especificado',
             'descricao' => 'O campo descricao é obrigatório',
-            'prazo_solucao' => 'O campo prazo de solução é obrigatório',
-            'situacao' => 'O campo situação é obrigatório',
-            'data_criacao.required' => 'O campo de data de criação é obrigatório',
-            'data_solucao' => 'O campo data de solução precisa ser uma data',
-            'user_id' => 'O Chamado precisa ter um usuário identificado'
+//            'user_id' => 'O Chamado precisa ter um usuário identificado'
         ];
     }
 }

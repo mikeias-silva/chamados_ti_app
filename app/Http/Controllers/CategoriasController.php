@@ -8,6 +8,8 @@ use App\Services\CategoriasService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\View\View;
 use function PHPUnit\Framework\exactly;
 
 class CategoriasController extends Controller
@@ -23,7 +25,7 @@ class CategoriasController extends Controller
     public function index()
     {
         $categorias = Categorias::all();
-        return view('categorias.index', compact($categorias));
+        return view('categorias.index', compact('categorias'));
     }
     public function create()
     {
@@ -33,48 +35,42 @@ class CategoriasController extends Controller
     {
         try {
             $newCategoria = $this->categoriasService->createCategoria($request->all());
-            Log::channel('daily')->info("Nova categoria cadastrado com sucesso: " . $newCategoria);
             return redirect()->route('categorias.index')->with(['success' => 'Cadastrado com sucesso!']);
         } catch (Exception $exception) {
-            Log::channel('daily')->error("Erro ao cadastraro nova categoria: " . $exception->getMessage());
             return redirect()->route('categorias.index')->withErrors([$exception->getMessage()]);
         }
     }
-    public function show(Categorias $categorias)
+    public function show(Categorias $categoria): View
     {
-        return view('categorias.show', $categorias);
+        return view('categorias.show', $categoria);
     }
 
-    public function edit(Categorias $categorias)
+    public function edit(Categorias $categoria)
     {
-        return view('categorias.edit', compact('categorias'));
+        return view('categorias.edit', compact('categoria'));
     }
 
-    public function update(CategoriasRequest $request, Categorias $categorias)
+    public function update(CategoriasRequest $request, Categorias $categoria)
     {
         try {
-            $this->categoriasService->editCategoria($request->all(), $categorias->id);
-            Log::channel('daily')->info("Categoria id: $categorias->id editado com sucesso");
+            $this->categoriasService->editCategoria($request->all(), $categoria->id);
             return redirect()->route('categorias.index')->with(['success' => 'Alterado com sucesso!']);
         } catch (Exception $exception) {
-            Log::channel('daily')->error("Erro no update " . $exception->getMessage());
             return redirect()->route('categorias.index')->withErrors([$exception->getMessage()]);
         }
     }
 
-    public function delete(Categorias $categorias)
+    public function delete(Categorias $categoria)
     {
-        return view('categorias.delete', compact('categorias'));
+        return view('categorias.delete', compact('categoria'));
     }
 
-    public function destroy(Categorias $categorias)
+    public function destroy(Categorias $categoria)
     {
         try {
-            $this->categoriasService->deleteCategoria($categorias->id);
-            Log::channel('daily')->info("Categoria id: $categorias->id Deletado com sucesso");
+            $this->categoriasService->deleteCategoria($categoria->id);
             return redirect()->route('categorias.index')->with(['success' => 'Deletado com sucesso!']);
         } catch (Exception $exception) {
-            Log::channel('daily')->error('Erro ao deletar: ' . $exception->getMessage());
             return redirect()->route('categorias.index')->withErrors([$exception->getMessage()]);
         }
     }

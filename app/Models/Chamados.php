@@ -16,13 +16,18 @@ class Chamados extends Model
         'situacao_id', 'user_id'];
 
 
-    public function categorias()
+    public function categoria()
     {
-        return $this->hasMany(Categorias::class, 'categoria_id', 'id');
+        return $this->hasOne(Categorias::class, 'id', 'categoria_id');
     }
 
-    public function situacoes()
+    public function situacao()
     {
-        return $this->hasMany(Situacoes::class, 'situacao_id', 'id');
+        return $this->hasOne(Situacoes::class, 'id', 'situacao_id');
+    }
+
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 }

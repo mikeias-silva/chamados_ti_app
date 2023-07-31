@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChamadosRequest;
+use App\Models\Categorias;
 use App\Models\Chamados;
+use App\Models\Situacoes;
 use App\Services\ChamadosService;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,17 +22,20 @@ class ChamadosController extends Controller
 
     public function index()
     {
-        $chamados = Chamados::all();
+        $chamados = Chamados::with('usuario', 'situacao', 'categoria')->get();
         return view('chamados.index', compact('chamados'));
     }
 
     public function create()
     {
-        return view('chamados.create');
+        $categorias = Categorias::all();
+        $situacoes = Situacoes::all();
+        return view('chamados.create', compact('categorias', 'situacoes'));
     }
 
     public function store(ChamadosRequest $request)
     {
+
         try {
             $newChamado = $this->chamadosService->createChamado($request->all());
             return redirect()->route('chamados.index')->with(['success' => "Chamado $newChamado->id criado com sucesso!"]);
@@ -39,36 +44,39 @@ class ChamadosController extends Controller
         }
     }
 
-    public function show(Chamados $chamados)
+    public function show(Chamados $chamado)
     {
-        return view('chamados.show', compact('chamados'));
+        $chamado->load('usuario', 'categoria', 'situacao');
+        return view('chamados.show', compact('chamado'));
     }
 
-    public function edit(Chamados $chamados)
+    public function edit(Chamados $chamado)
     {
-        return view('chamados.edit', compact('chamados'));
+        $chamado->load( 'categoria', 'situacao');
+        $categorias = Categorias::all();
+        return view('chamados.edit', compact('chamado', 'categorias'));
     }
 
-    public function update(ChamadosRequest $request, Chamados $chamados)
+    public function update(ChamadosRequest $request, Chamados $chamado)
     {
         try {
-            $this->chamadosService->editChamados($request->all(), $chamados->id);
+            $this->chamadosService->editChamados($request->all(), $chamado->id);
             return redirect()->route('chamados.index')->with(['success' => 'Chamado atualizado com sucesso']);
         } catch (Exception $exception) {
             return redirect()->route('chamados.index')->withErrors([$exception->getMessage()]);
         }
     }
 
-    public function delete(Chamados $chamados)
+    public function delete(Chamados $chamado)
     {
-        return view('chamados.delete', compact('chamados'));
+        return view('chamados.delete', compact('chamado'));
     }
 
-    public function destroy(Chamados $chamados)
+    public function destroy(Chamados $chamado)
     {
         try {
-            $this->chamadosService->deleteChamados($chamados->id);
-            return redirect()->route('chamados.index')->with(['success' => "Chamado $chamados->id deletado com sucesso"]);
+            $this->chamadosService->deleteChamados($chamado->id);
+            return redirect()->route('chamados.index')->with(['success' => "Chamado $chamado->id deletado com sucesso"]);
         } catch (Exception $exception) {
             return redirect()->route('chamados.index')->withErrors([$exception->getMessage()]);
         }

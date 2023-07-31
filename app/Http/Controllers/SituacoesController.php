@@ -41,40 +41,40 @@ class SituacoesController extends Controller
         }
     }
 
-    public function show(Situacoes $situacoes)
+    public function show(Situacoes $situacao)
     {
-        return view('situacoes.show', compact('situacoes'));
+        return view('situacoes.show', compact('situacao'));
     }
 
-    public function edit(Situacoes $situacoes)
+    public function edit(Situacoes $situacao)
     {
-        return view('situacoes.edit', compact('situacoes'));
+        return view('situacoes.edit', compact('situacao'));
     }
 
-    public function update(SituacoesRequest $request, Situacoes $situacoes)
+    public function update(SituacoesRequest $request, Situacoes $situacao)
     {
         try {
-            $this->situacoesService->editSituacao($request->validated(), $situacoes->id);
+            $this->situacoesService->editSituacao($request->validated(), $situacao->id);
             return redirect()->route('situacoes.index')->with(['success' => 'Editado com sucesso!']);
         } catch (Exception $exception) {
             return redirect()->route('situacoes.index')->withErrors($exception->getMessage());
         }
     }
 
-    public function delete(Situacoes $situacoes)
+    public function delete(Situacoes $situacao)
     {
         try {
-            return view('situacoes.delete', compact('situacoes'));
+            return view('situacoes.delete', compact('situacao'));
         } catch (ModelNotFoundException $exception) {
             return redirect()->route('situacoes.index')->withErrors([$exception->getMessage()]);
         }
     }
 
-    public function destroy($situacoes)
+    public function destroy($situacao)
     {
         try {
-            $this->situacoesService->deleteSituacao($situacoes);
-            return view('situacoes.index')->with(['success' => 'Deletdo com sucesso']);
+            $this->situacoesService->deleteSituacao($situacao);
+            return redirect()->route('situacoes.index')->with(['success' => 'Deletado com sucesso']);
         } catch (Exception $exception) {
             return redirect()->route('situacoes.index')->withErrors([$exception->getMessage()]);
         }
